@@ -51,31 +51,34 @@ def main():
                     if techs_id in techs.keys():
                         new_adres = input("Введите новый адрес ")
                         new_person = input("Введите нового владельца ")
-                        techs[techs_id][0] = new_adres
-                        techs[techs_id][1] = new_person
+                        techs[techs_id][3] = new_adres
+                        techs[techs_id][2] = new_person
+                        # Здесь нужно произвести записть в файл ('techs.txt', 'w')
                     else:
                         print("Нет такого товара")
                 elif choose == 5:
-                    name = input("Введите товар ")
-                    if name in techs.keys():
+                    techs_id = input("Введите id товарa ")
+                    if techs_id in techs.keys():
                         new_person = input("Введите нового владельца ")
-                        techs[name][1] = new_person
+                        techs[techs_id][2] = new_person
+                        # Здесь нужно произвести записть в файл ('techs.txt', 'w')
                     else:
                         print("Нет такого товара")
 
                 elif choose == 6:
                     for element in techs:
-                        print(element, techs[element][0],techs[element][1],techs[element][2],techs[element][3])
+                        print(element, techs[element][0],techs[element][1],techs[element][2],techs[element][3],techs[element][4])
                 elif choose==7:
                     name = input("Введите офис")
                     if name in offices.keys():
                         for element in techs.keys():
-                            if techs[element][1]==name:
+                            if techs[element][2]==name:
                                 print(element,techs[element])
                     else:
                         print("Нет такого офиса")
                 elif choose == 8:
                     exit = False
+                    # Здесь нужно произвести записть в файл ('techs.txt', 'w')
                 else:
                     print("Некорректный ввод, повторите попытку")
             exit = True
@@ -86,14 +89,17 @@ def main():
                     name =input("Ввести название ")
                     adres = input("Ввести адрес ")
                     offices.update({name:adres})
+                    # Здесь нужно произвести записть в файл ('offices.txt', 'a')
                 elif choose == 2:
                     name = input("Ввести название ")
                     if name in offices.keys():
                         new_adres = input("Ввести адрес ")
                         offices[name]= new_adres
                         for element in techs:
-                            if techs[element][1]==name:
-                                techs[element][0]=new_adres
+                            if techs[element][2]==name:
+                                techs[element][3]=new_adres
+                        # Здесь нужно произвести записть в файл ('offices.txt', 'w')
+                        # Здесь нужно произвести записть в файл ('techs.txt', 'w')
                     else:
                         print("Нет такого офиса")
                 elif choose == 3:
