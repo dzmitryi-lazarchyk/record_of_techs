@@ -108,8 +108,10 @@ def main():
                         offices.pop(name)
 
                         for element in techs:
-                            if techs[element][1] == name:
+                            if techs[element][2] == name:
                                 techs.pop(element)
+                        # Здесь нужно произвести записть в файл ('offices.txt', 'w')
+                        # Здесь нужно произвести записть в файл ('techs.txt', 'w')
                     else:
                         print("Нет такого офиса")
                 elif choose == 4:
