@@ -1,13 +1,11 @@
 from get_data import get_techs, get_offices, get_id
 
-
 def main():
     # Учёт техники в компании, ключ это предмет в компании, значение это список["адрес","человек","id","цена"]
     # вывод информации, перемещение в другое место, перепривяку к другому человеку, удаление, добавление, редактирование
     # сделать словарь для учёта офисов
-    id = 1
-    techs={"Монитор":["Одинцова 8","Офис_1",1,400]}
-    offices={"Офис_1":"Одинцова 8"}
+    techs=get_techs()
+    offices=get_offices()
     exit = True
     while exit:
         choose=int(input("1.Заниматься предметами\n2.Заниматься офисами\n3.ВЫХОД\n-> "))
@@ -18,15 +16,25 @@ def main():
                     name = input("Введите название нового товара ")
                     adres = input("Введите адрес нового товара ")
                     owner = input("Введите нового владельца ")
-                    id+=1
-                    new_id = id
-                    coast= int(input("Введите цену нового товара "))
-                    techs.update({name:[adres,owner,new_id,coast]})
+                    specs = input("Введите описание нового товара")
+                    new_id = get_id()
+                    try:
+                        cost = float(input("Введите цену нового товара ").replace(',', '.').strip())
+                    except ValueError:
+                        print("Некорректный ввод")
+                    else:
+                        techs.update({new_id:[name,specs,owner,adres,f'{cost:{2}}']})
+                    # for item in techs:
+                    #     print('{}|{}|{}|{}|{}|{}'.format(item, techs[item][0], techs[item][1],techs[item][2],techs[item][3], techs[item][4]))
                 elif choose == 2:
-                    name = input("Введите название товара ")
-                    if name in techs.keys():
-                        new_coast=int(input("Введите новую цену "))
-                        techs[name][3]=new_coast
+                    techs_id= input("Введите id товра ")
+                    if techs_id in techs.keys():
+                        try:
+                            new_coast=float(input("Введите новую цену товара ").replace(',', '.').strip())
+                        except ValueError:
+                            print("Некорректный ввод")
+                        else:
+                            techs[techs_id][4]=new_coast
                     else:
                         print("Нет такого товара")
                 elif choose == 3:
