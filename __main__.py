@@ -24,6 +24,7 @@ def main():
                         print("Некорректный ввод")
                     else:
                         techs.update({new_id:[name,specs,owner,adres,f'{cost:{2}}']})
+                    #Здесь нужно произвести записть в файл ('techs.txt', 'w')
                     # for item in techs:
                     #     print('{}|{}|{}|{}|{}|{}'.format(item, techs[item][0], techs[item][1],techs[item][2],techs[item][3], techs[item][4]))
                 elif choose == 2:
@@ -35,21 +36,23 @@ def main():
                             print("Некорректный ввод")
                         else:
                             techs[techs_id][4]=new_coast
+                            # Здесь нужно произвести записть в файл ('techs.txt', 'w')
                     else:
                         print("Нет такого товара")
                 elif choose == 3:
-                    name =input("Введите название товара ")
-                    if name in techs.keys():
-                        techs.pop(name)
+                    techs_id =input("Введите id товара ")
+                    if techs_id in techs.keys():
+                        techs.pop(techs_id)
+                        # Здесь нужно произвести записть в файл ('techs.txt', 'w')
                     else:
                         print("Нет такого товара")
                 elif choose == 4:
-                    name = input("Введите товар ")
-                    if name in techs.keys():
+                    techs_id = input("Введите id товара ")
+                    if techs_id in techs.keys():
                         new_adres = input("Введите новый адрес ")
                         new_person = input("Введите нового владельца ")
-                        techs[name][0] = new_adres
-                        techs[name][1] = new_person
+                        techs[techs_id][0] = new_adres
+                        techs[techs_id][1] = new_person
                     else:
                         print("Нет такого товара")
                 elif choose == 5:
