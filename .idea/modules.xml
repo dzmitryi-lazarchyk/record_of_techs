@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../onliner/.idea/onliner.iml" filepath="$PROJECT_DIR$/../onliner/.idea/onliner.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/onliner_parse.iml" filepath="$PROJECT_DIR$/.idea/onliner_parse.iml" />
     </modules>
   </component>

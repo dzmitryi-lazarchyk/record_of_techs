@@ -3,6 +3,30 @@ from bs4 import BeautifulSoup as bs
 import re
 import random
 
+'''Url and parameters of query. They represent parameters for the  fetch() function.'''
+first_page_url = "https://catalog.onliner.by/sdapi/catalog.api/search/printers"
+first_page_params = {
+    "headers": {
+        "accept": "application/json, text/javascript, */*; q=0.01",
+        "accept-language": "en-US,en;q=0.9",
+        "if-none-match": "W/\"4cabedf3598f0a4f4a8f0f2fc3584ab3\"",
+        "sec-ch-ua": "\".Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"103\", \"Chromium\";v=\"103\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "x-requested-with": "XMLHttpRequest",
+        "cookie": "_ym_uid=1658842657347516120; _ym_d=1658842657; _gid=GA1.2.414116336.1658842657; tmr_lvidTS=1658842657046; tmr_lvid=602da7258815aa8661b8fe0c09472d08; _ym_isad=2; catalog_session=OUvIOt0RpZzWfyeUkCku4PWxmnSfAH9dq9mhKyQk; ouid=snyBEGLf7iyM7e7/MsloAg==; _gcl_au=1.1.263137017.1658842670; _gaexp=GAX1.2.srp5-mVGQcyzlricTjj8PQ.19211.0; _fbp=fb.1.1658842670769.1898710537; _tt_enable_cookie=1; _ttp=0032b1bd-1855-453b-9197-c509d79c238a; __gads=ID=7db29bf78bc20e6f:T=1658842742:S=ALNI_Mb6VRSbLas_w5YCea2iPbEq_ucL4A; __gpi=UID=0000092b8086402b:T=1658842742:RT=1658842742:S=ALNI_MYYptD_jxRZlVhITwtCl27k5bapDA; tmr_reqNum=10; _gat_UA-340679-1=1; _gat_UA-340679-16=1; _ga=GA1.1.1191673485.1658842657; _ga_4Y6NQKE48G=GS1.1.1658842670.1.1.1658844721.11; _ga_NG54S9EFTD=GS1.1.1658842657.1.1.1658844721.0",
+        "Referer": "https://catalog.onliner.by/printers",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+    },
+    "body": None,
+    "method": "GET"
+}
+
+
+
 def get_id():
     """Function searches file 'techs.txt' for id's. If it finds some, it returns
     next ordinal id. Otherwise, function returns 1."""
@@ -27,6 +51,8 @@ def get_id():
 
 
 def get_offices():
+    """Function reads data from file 'offices.txt' and returns data as dictionary.
+    In case if file doesn't exit, it will be created and filled with data."""
     offices = dict()
     try:
         with open('offices.txt', 'r', encoding='utf-8') as file:
@@ -49,19 +75,24 @@ def get_offices():
     return offices
 
 
-def get_last(url_first):
-    """Function takes in url of the first page and returns url of the last one."""
-    r = requests.get(url_first)
-    soup = bs(r.text, 'lxml')
-    url_last = 'https://tm.by'+soup.find('li',  class_="pager-last").find('a').attrs['href']
-    r = requests.get(url_last)
-    soup = bs(r.text, 'lxml')
-    last_page = soup.find('li',  class_="active").find('span').text
 
-    return int(last_page)
+
+
+def fetch(url, params):
+    """Function takes in url and parameters for fetch request and returns
+    responce of the site."""
+    headers = params['headers']
+    body = params['body']
+    if params['method'] == 'GET':
+        return requests.get(url, headers=headers)
+    if params['method'] == 'POST':
+        return requests.post(url, headers=headers, data=body)
 
 
 def get_techs():
+    """Function reads data from files 'techs.txt' and returns data as dictionary.
+        In case if file doesn't exit, it will be created and filled with data using fetch()
+        and get_offices() functions."""
     techs = dict()
     try:
         with open('techs.txt', 'r', encoding='utf-8') as file:
@@ -72,46 +103,37 @@ def get_techs():
                 else:
                     continue
     except FileNotFoundError:
-        url = 'https://tm.by/printery-i-mfu?f[]=categories:26901&f[]=categories:26900&f[]=categories:26857&items_per_page=25'
-        r = requests.get(url)
-        last_page = get_last(url)
-        printers = [[], [], [], []]
-        printer_id = 1
-        for i in range(0, last_page):
-            if i == 0:
-                url = url
+        printers_info = [[], [], []]
+        page = fetch(first_page_url, first_page_params)
+        pages = page.json()['page']['last']
+        for n in range(1, int(pages) + 1):
+            if n == 1:
+                page_number = ''
             else:
-                url = f'{url}&page={i}'
-            r = requests.get(url)
-            soup = bs(r.text, 'lxml')
-            names = soup.find_all('div', class_=re.compile(r'h4'), limit =25)
-            specs = soup.find_all('div', class_="field field-name-field-parameters clearfix")
-            prices = soup.find_all('div', class_=re.compile('.*display-price'))
-            amount = min(len(names), len(specs), len(prices))
-            for k in range(0, random.randint(amount, amount*2)):
-                g = random.randint(0, amount-1)
-                number = prices[g].text.translate(prices[g].text.maketrans('', '', ' '))[:-1]
-                try:
-                    number = float(number)
-                except ValueError:
-                    if names[g].text in printers[1]:
-                        printers[3].append(printers[3][printers[1].index(names[g].text)])
-                    else:
-                        printers[3].append(round((random.uniform(500, 2000)), 2))
+                page_number = '?page=' + str(n)
+            page = fetch(first_page_url + page_number, first_page_params)
+            items = page.json()['products']
+            for item in items:
+                printers_info[0].append(item['extended_name'])
+                printers_info[1].append(item['micro_description'])
+                if item['prices']:
+                    printers_info[2].append(item['prices']['price_min']['amount'])
                 else:
-                    printers[3].append(number)
-                printers[1].append(names[g].text)
-                printers[0].append(printer_id)
-                printer_id += 1
-                items = specs[g].find_all('div',  class_="field-items")
-                word = 'Бренд:'+ items[0].text+', Артикул производителя:'+items[0].text
-                printers[2].append(word)
+                    printers_info[2].append(
+                        round(sum([float(price) for price in printers_info[2]]) / len(printers_info[2]), 2))
 
         with open('techs.txt', 'w', encoding='utf-8') as file:
             offices = get_offices()
-            for i in range(0, len(printers[0])):
+            printer_id = 1
+            for i in range(0, len(printers_info[0])):
                 office_key = random.choice(list(offices))
-                techs[printers[0][i]] = [printers[1][i], printers[2][i],office_key,offices[office_key], printers[3][i]]
-                file.write('{}|{}|{}|{}|{}|{}\n'.format(printers[0][i], printers[1][i], printers[2][i],office_key,offices[office_key], printers[3][i]))
+                techs[printer_id] = [printers_info[0][i], printers_info[1][i], office_key, offices[office_key],
+                                     printers_info[2][i]]
+                file.write(
+                    '{}|{}|{}|{}|{}|{}\n'.format(printer_id, printers_info[0][i], printers_info[1][i], office_key,
+                                                 offices[office_key], printers_info[2][i]))
+                printer_id += 1
 
     return techs
+
+get_techs()
