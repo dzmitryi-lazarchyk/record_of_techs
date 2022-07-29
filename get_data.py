@@ -99,7 +99,7 @@ def get_techs():
             for line in file:
                 if re.search(r'.+\|.+\|.+\|.+\|.+\|.+', line):
                     list_techs = line.split('|')
-                    techs[list_techs[0]] = list_techs[1:][:-1]
+                    techs[list_techs[0]] = list_techs[1], list_techs[2], list_techs[3], list_techs[4], list_techs[5][:-1]
                 else:
                     continue
     except FileNotFoundError:

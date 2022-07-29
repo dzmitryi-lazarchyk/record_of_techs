@@ -66,6 +66,7 @@ def main():
                         print("Нет такого товара")
 
                 elif choose == 6:
+                    # print(techs)
                     for element in techs:
                         print(element, techs[element][0],techs[element][1],techs[element][2],techs[element][3],techs[element][4])
                 elif choose==7:
