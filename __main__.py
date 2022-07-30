@@ -24,7 +24,10 @@ def main():
                         print("Некорректный ввод")
                     else:
                         techs.update({new_id:[name,specs,owner,adres,f'{cost:{2}}']})
-                    #Здесь нужно произвести записть в файл ('techs.txt', 'w')
+                    with open('techs.txt', 'w', encoding='utf-8') as file:
+                        for key in techs:
+                            file.write({printer_id[0][]})
+
                     # for item in techs:
                     #     print('{}|{}|{}|{}|{}|{}'.format(item, techs[item][0], techs[item][1],techs[item][2],techs[item][3], techs[item][4]))
                 elif choose == 2:
@@ -36,14 +39,20 @@ def main():
                             print("Некорректный ввод")
                         else:
                             techs[techs_id][4]=new_coast
-                            # Здесь нужно произвести записть в файл ('techs.txt', 'w')
+                            with open('techs.txt', 'w', encoding='utf-8') as file:
+                                for key in techs:
+                                    file.write({printer_id[0][]})
+
                     else:
                         print("Нет такого товара")
                 elif choose == 3:
                     techs_id =input("Введите id товара ")
                     if techs_id in techs.keys():
                         techs.pop(techs_id)
-                        # Здесь нужно произвести записть в файл ('techs.txt', 'w')
+                        with open('techs.txt', 'w', encoding='utf-8') as file:
+                            for key in techs:
+                                file.write({printer_id[0][]})
+
                     else:
                         print("Нет такого товара")
                 elif choose == 4:
@@ -53,7 +62,10 @@ def main():
                         new_person = input("Введите нового владельца ")
                         techs[techs_id][3] = new_adres
                         techs[techs_id][2] = new_person
-                        # Здесь нужно произвести записть в файл ('techs.txt', 'w')
+                        with open('techs.txt', 'w', encoding='utf-8') as file:
+                            for key in techs:
+                                file.write({printer_id[0][]})
+
                     else:
                         print("Нет такого товара")
                 elif choose == 5:
@@ -61,7 +73,10 @@ def main():
                     if techs_id in techs.keys():
                         new_person = input("Введите нового владельца ")
                         techs[techs_id][2] = new_person
-                        # Здесь нужно произвести записть в файл ('techs.txt', 'w')
+                        with open('techs.txt', 'w', encoding='utf-8') as file:
+                            for key in techs:
+                                file.write({printer_id[0][]})
+
                     else:
                         print("Нет такого товара")
 
@@ -79,7 +94,10 @@ def main():
                         print("Нет такого офиса")
                 elif choose == 8:
                     exit = False
-                    # Здесь нужно произвести записть в файл ('techs.txt', 'w')
+                    with open('techs.txt', 'w', encoding='utf-8') as file:
+                        for key in techs:
+                            file.write({printer_id[0][]})
+
                 else:
                     print("Некорректный ввод, повторите попытку")
             exit = True
@@ -90,7 +108,10 @@ def main():
                     name =input("Ввести название ")
                     adres = input("Ввести адрес ")
                     offices.update({name:adres})
-                    # Здесь нужно произвести записть в файл ('offices.txt', 'a')
+                    with open('offices.txt.txt', 'w', encoding='utf-8') as file:
+                        for key in offices:
+                            file.write()
+
                 elif choose == 2:
                     name = input("Ввести название ")
                     if name in offices.keys():
@@ -99,8 +120,13 @@ def main():
                         for element in techs:
                             if techs[element][2]==name:
                                 techs[element][3]=new_adres
-                        # Здесь нужно произвести записть в файл ('offices.txt', 'w')
-                        # Здесь нужно произвести записть в файл ('techs.txt', 'w')
+                        with open('offices.txt.txt', 'w', encoding='utf-8') as file:
+                            for key in offices:
+                                file.write()
+                        with open('techs.txt', 'w', encoding='utf-8') as file:
+                            for key in techs:
+                                file.write({printer_id[0][]})
+
                     else:
                         print("Нет такого офиса")
                 elif choose == 3:
@@ -111,8 +137,13 @@ def main():
                         for element in techs:
                             if techs[element][2] == name:
                                 techs.pop(element)
-                        # Здесь нужно произвести записть в файл ('offices.txt', 'w')
-                        # Здесь нужно произвести записть в файл ('techs.txt', 'w')
+                        with open('offices.txt.txt', 'w', encoding='utf-8') as file:
+                            for key in offices:
+                                file.write()
+                        with open('techs.txt', 'w', encoding='utf-8') as file:
+                            for key in techs:
+                                file.write({printer_id[0][]})
+
                     else:
                         print("Нет такого офиса")
                 elif choose == 4:
