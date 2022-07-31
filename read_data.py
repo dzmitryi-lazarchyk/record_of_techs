@@ -27,12 +27,12 @@ first_page_params = {
 
 
 
-def get_id():
-    """Function searches file 'techs.txt' for id's. If it finds some, it returns
+def get_id(file_name_techs='techs.txt'):
+    """Function searches file file_name_techs for id's. If it finds some, it returns
     next ordinal id. Otherwise, function returns 1."""
     techs = dict()
     try:
-        with open('techs.txt', 'r', encoding='utf-8') as file:
+        with open(file_name_techs, 'r', encoding='utf-8') as file:
             for line in file:
                 if re.search(r'.+\|.+\|.+\|.+\|.+\|.+', line):
                     list_techs = line.split('|')
@@ -40,22 +40,22 @@ def get_id():
                 else:
                     continue
     except FileNotFoundError:
-        techs = get_techs()
+        techs = read_file_techs()
     finally:
         all_id = set(techs.keys())
         if all_id:
             stencil = set([str(i) for i in range(1, len(all_id) + 3)])
-            return min(stencil - all_id)
+            return min([int(i) for i in (stencil - all_id)])
         else:
             return 1
 
 
-def get_offices():
-    """Function reads data from file 'offices.txt' and returns data as dictionary.
+def read_file_offices(file_name_offices='offices.txt'):
+    """Function reads data from file file_name_offices and returns data as dictionary.
     In case if file doesn't exit, it will be created and filled with data."""
     offices = dict()
     try:
-        with open('offices.txt', 'r', encoding='utf-8') as file:
+        with open(file_name_offices, 'r', encoding='utf-8') as file:
             for line in file:
                 if re.search(r'.+\|.+', line):
                     list_offices = line.split('|')
@@ -67,7 +67,7 @@ def get_offices():
                 'Короткевича, 5', 'Семашко, 1', 'Кулешова, 6',
                 'Якубова, 10', 'Солтыса, 177', 'Независимости, 95']
 
-        with open('offices.txt', 'w', encoding='utf-8') as file:
+        with open(file_name_offices, 'w', encoding='utf-8') as file:
             for i in range(1, len(addr) + 1):
                 offices[f'Офис_{i}'] = addr[i - 1]
                 file.write('{}|{}\n'.format(f'Офис_{i}', addr[i - 1]))
@@ -89,17 +89,18 @@ def fetch(url, params):
         return requests.post(url, headers=headers, data=body)
 
 
-def get_techs():
-    """Function reads data from files 'techs.txt' and returns data as dictionary.
+def read_file_techs(file_name_techs='techs.txt', file_name_offices='offices.txt', ):
+    """Function reads data from files file_name_techs and returns data as dictionary.
         In case if file doesn't exit, it will be created and filled with data using fetch()
-        and get_offices() functions."""
+        and read_file_offices() functions."""
     techs = dict()
     try:
-        with open('techs.txt', 'r', encoding='utf-8') as file:
+        with open(file_name_techs, 'r', encoding='utf-8') as file:
             for line in file:
                 if re.search(r'.+\|.+\|.+\|.+\|.+\|.+', line):
                     list_techs = line.split('|')
-                    techs[list_techs[0]] = list_techs[1], list_techs[2], list_techs[3], list_techs[4], list_techs[5][:-1]
+                    techs[list_techs[0]] = [list_techs[1], list_techs[2], list_techs[3],
+                                            list_techs[4], list_techs[5][:-1]]
                 else:
                     continue
     except FileNotFoundError:
@@ -122,18 +123,17 @@ def get_techs():
                     printers_info[2].append(
                         round(sum([float(price) for price in printers_info[2]]) / len(printers_info[2]), 2))
 
-        with open('techs.txt', 'w', encoding='utf-8') as file:
-            offices = get_offices()
+        with open(file_name_techs, 'w', encoding='utf-8') as file:
+            offices = read_file_offices(file_name_offices)
             printer_id = 1
             for i in range(0, len(printers_info[0])):
                 office_key = random.choice(list(offices))
-                techs[printer_id] = [printers_info[0][i], printers_info[1][i], office_key, offices[office_key],
+                techs[str(printer_id)] = [printers_info[0][i], printers_info[1][i], office_key, offices[office_key],
                                      printers_info[2][i]]
                 file.write(
                     '{}|{}|{}|{}|{}|{}\n'.format(printer_id, printers_info[0][i], printers_info[1][i], office_key,
                                                  offices[office_key], printers_info[2][i]))
                 printer_id += 1
+    finally:
+        return techs
 
-    return techs
-
-get_techs()
